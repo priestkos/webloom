@@ -1,6 +1,7 @@
 name: build
 
 # Build Webloom on every commit (all branches + PRs); also runnable by hand.
+# Pushing a `v*` tag additionally publishes a GitHub Release with the exe attached.
 on:
   push:
   pull_request:
@@ -49,3 +50,27 @@ jobs:
           name: webloom-windows-x86_64
           path: target/x86_64-pc-windows-msvc/release/webloom.exe
           if-no-files-found: error
+
+  release:
+    name: release
+    needs: windows
+    # Only a tag push cuts a release; branch and PR runs stop after `windows`.
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # required to publish the release
+    steps:
+      - name: Download the built executable
+        uses: actions/download-artifact@v7
+        with:
+          name: webloom-windows-x86_64
+          path: dist
+
+      - name: Publish the GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" dist/webloom.exe \
+            --title "Webloom ${GITHUB_REF_NAME}" \
+            --generate-notes
