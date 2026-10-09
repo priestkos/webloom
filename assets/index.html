@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="dark">
+<title>Webloom</title>
+<style>
+/* =======================================================================
+   WEBLOAM - interface
+   Theme: the Kos Mos palette, from D:\Profile\assets\style.css :root.
+   Rule that governs everything below: gold is material (structure, hairlines,
+   numerals), crimson is the accent and the ONLY thing that lights up.
+   ======================================================================= */
+:root {
+  --bg-deep: #07080c;
+  --bg-surface: #0e111a;
+  --bg-card: rgba(16, 20, 32, 0.72);
+  --bg-raised: #121724;
+  --border-subtle: rgba(245, 176, 65, 0.16);
+  --border-bright: rgba(255, 68, 85, 0.45);
+
+  --crimson: #ff2a44;
+  --crimson-glow: rgba(255, 42, 68, 0.55);
+  --foxfire-gold: #f5b041;
+  --gold-glow: rgba(245, 176, 65, 0.45);
+  --amber-core: #e07a3c;
+  --silver-mist: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+
+  --font-head: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Consolas', ui-monospace, monospace;
+
+  --code-size: 13px;
+  --code-lh: 21px;
+  --split: 46%;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--silver-mist);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* crimson accent line: the one thing that lights up, pinned to the top */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: var(--crimson);
+  box-shadow: 0 0 10px var(--crimson-glow);
+  z-index: 50;
+  pointer-events: none;
+}
+
+.app {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  height: 100vh;
+}
+
+/* ---------------------------------------------------------------- topbar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px 10px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: linear-gradient(180deg, #0c0f18 0%, var(--bg-deep) 100%);
+  -webkit-app-region: drag;
+  user-select: none;
+}
+
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand-mark { color: var(--foxfire-gold); font-size: 15px; }
+.brand-name {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.34em;
+  color: var(--silver-mist);
+}
+.brand-sub {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.topbar-right { display: flex; align-items: center; gap: 10px; -webkit-app-region: no-drag; }
+.doc-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  max-width: 40ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--text-dim);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.dot.on { background: var(--crimson); box-shadow: 0 0 8px var(--crimson-glow); }
+
+/* --------------------------------------------------------------- toolbar */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 18px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+}
+.tool-group { display: flex; align-items: center; gap: 8px; }
+.tool-group.right { gap: 12px; }
+
+.btn {
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--silver-mist);
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: 2px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.btn:hover { border-color: var(--gold-glow); color: #fff; }
+.btn:active { transform: translateY(1px); }
+.btn-accent {
+  border-color: rgba(255, 42, 68, 0.5);
+  color: #fff;
+  background: rgba(255, 42, 68, 0.08);
+}
+.btn-accent:hover { border-color: var(--crimson); background: rgba(255, 42, 68, 0.16); box-shadow: 0 0 12px rgba(255, 42, 68, 0.25); }
+.btn-ghost { border-color: transparent; color: var(--text-muted); }
+.btn-ghost:hover { border-color: var(--border-subtle); color: var(--silver-mist); }
+
+.seg { display: inline-flex; border: 1px solid var(--border-subtle); border-radius: 2px; overflow: hidden; }
+.seg-btn {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--border-subtle);
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.seg-btn:last-child { border-right: 0; }
+.seg-btn:hover { color: var(--silver-mist); }
+.seg-btn.is-active { color: var(--crimson); background: rgba(255, 42, 68, 0.07); }
+
+/* ------------------------------------------------------------- workspace */
+.workspace {
+  display: grid;
+  grid-template-columns: var(--split) 7px 1fr;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.pane { min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+
+/* ------------------------------------------------------------- editors */
+.pane-editors { background: var(--bg-surface); }
+.pane-editors[data-view="html"] .editor-block[data-name="css"],
+.pane-editors[data-view="css"] .editor-block[data-name="html"] { display: none; }
+
+.editor-block { display: flex; flex-direction: column; flex: 1 1 0; min-height: 0; }
+.editor-block + .editor-block { border-top: 1px solid var(--border-subtle); }
+
+.editor-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 12px;
+  background: #0b0e15;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.editor-head .lang {
+  font-family: var(--font-head);
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--foxfire-gold);
+}
+.editor-head .hint { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); }
+
+.editor { position: relative; display: flex; flex: 1 1 auto; min-height: 0; }
+.gutter {
+  flex: 0 0 auto;
+  width: 3.4em;
+  padding: 12px 8px 12px 0;
+  text-align: right;
+  white-space: pre;
+  font-family: var(--font-mono);
+  font-size: var(--code-size);
+  line-height: var(--code-lh);
+  color: #5c6a80;
+  background: #0a0d14;
+  border-right: 1px solid var(--border-subtle);
+  overflow: hidden;
+  user-select: none;
+}
+.code-wrap { position: relative; flex: 1 1 auto; min-width: 0; }
+.highlight, .code {
+  position: absolute; inset: 0;
+  margin: 0;
+  padding: 12px 16px;
+  font-family: var(--font-mono);
+  font-size: var(--code-size);
+  line-height: var(--code-lh);
+  white-space: pre;
+  tab-size: 2;
+  border: 0;
+  outline: 0;
+}
+.highlight { pointer-events: none; overflow: hidden; color: var(--silver-mist); }
+.code {
+  background: transparent;
+  color: transparent;
+  caret-color: var(--crimson);
+  resize: none;
+  overflow: auto;
+}
+.code::selection { background: rgba(255, 42, 68, 0.26); color: transparent; }
+.code { scrollbar-width: thin; scrollbar-color: #2a3346 transparent; }
+
+/* token palette */
+.t-tag { color: var(--crimson); }
+.t-attr { color: var(--foxfire-gold); }
+.t-str { color: var(--amber-core); }
+.t-punct { color: var(--text-dim); }
+.t-doctype { color: var(--text-muted); }
+.t-comment { color: #55607a; font-style: italic; }
+.t-sel { color: var(--foxfire-gold); }
+.t-prop { color: var(--crimson); }
+.t-val { color: var(--silver-mist); }
+.t-num { color: var(--amber-core); }
+
+/* ------------------------------------------------------------- divider */
+.divider {
+  position: relative;
+  cursor: col-resize;
+  background: var(--bg-deep);
+}
+.divider::after {
+  content: ""; position: absolute; inset: 0 auto 0 3px; width: 1px;
+  background: var(--border-subtle);
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.divider:hover::after, body.resizing .divider::after {
+  background: var(--foxfire-gold);
+  box-shadow: 0 0 8px var(--gold-glow);
+}
+body.resizing { cursor: col-resize; }
+
+/* ------------------------------------------------------------- preview */
+.pane-preview { background: var(--bg-deep); border-left: 1px solid var(--border-subtle); }
+.preview-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 12px;
+  background: #0b0e15;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.preview-head .lang {
+  font-family: var(--font-head);
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--foxfire-gold);
+}
+.preview-status { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); }
+.preview-status.err { color: var(--crimson); }
+.preview-body { flex: 1 1 auto; min-height: 0; padding: 14px; display: flex; }
+#preview {
+  flex: 1 1 auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: 2px;
+  background: #0b0d13;
+}
+
+/* ----------------------------------------------------------- statusbar */
+.statusbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+  padding: 5px 18px;
+  background: #0a0d14;
+  border-top: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.statusbar .err { color: var(--crimson); }
+#status-right { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">&#10087;</span>
+      <span class="brand-name">WEBLOOM</span>
+      <span class="brand-sub">HTML / CSS studio</span>
+    </div>
+    <div class="topbar-right">
+      <span class="doc-name" id="doc-name">untitled.html</span>
+      <span class="dot" id="dirty-dot" title="Unsaved changes"></span>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="tool-group">
+      <button class="btn" data-action="new">New</button>
+      <button class="btn" data-action="open">Open</button>
+      <button class="btn btn-accent" data-action="save">Save</button>
+      <button class="btn" data-action="export">Export</button>
+    </div>
+    <div class="tool-group right">
+      <div class="seg" id="view-seg">
+        <button class="seg-btn" data-view="html">HTML</button>
+        <button class="seg-btn" data-view="css">CSS</button>
+        <button class="seg-btn is-active" data-view="split">Split</button>
+      </div>
+      <button class="btn btn-ghost" data-action="refresh" title="Re-render the preview">Refresh</button>
+    </div>
+  </div>
+
+  <main class="workspace" id="workspace">
+
+    <section class="pane pane-editors" id="pane-editors" data-view="split">
+
+      <div class="editor-block" data-name="html">
+        <div class="editor-head"><span class="lang">HTML</span><span class="hint">markup</span></div>
+        <div class="editor" data-lang="html">
+          <div class="gutter"></div>
+          <div class="code-wrap">
+            <pre class="highlight" aria-hidden="true"><code></code></pre>
+            <textarea class="code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="editor-block" data-name="css">
+        <div class="editor-head"><span class="lang">CSS</span><span class="hint">styles</span></div>
+        <div class="editor" data-lang="css">
+          <div class="gutter"></div>
+          <div class="code-wrap">
+            <pre class="highlight" aria-hidden="true"><code></code></pre>
+            <textarea class="code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="divider" id="divider" role="separator" aria-orientation="vertical" title="Drag to resize"></div>
+
+    <section class="pane pane-preview">
+      <div class="preview-head">
+        <span class="lang">Preview</span>
+        <span class="preview-status" id="preview-status">ready</span>
+      </div>
+      <div class="preview-body">
+        <iframe id="preview" title="Live preview"
+                sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="statusbar">
+    <span id="status-left">Ready</span>
+    <span id="status-right"></span>
+  </footer>
+
+</div>
+
+<script>
+"use strict";
+
+/* =====================================================================
+   0. Small helpers
+   ===================================================================== */
+const CSS_MARK = "webloom-style";
+
+const STARTER_HTML = [
+  '<div class="card">',
+  '  <span class="eyebrow">&#10087; Webloom</span>',
+  '  <h1>K\'os Mos</h1>',
+  '  <p>Edit the markup and the styles on the left.</p>',
+  '  <p>The preview on the right updates as you type.</p>',
+  '  <a class="cta" href="#">A crimson accent</a>',
+  '</div>'
+].join('\n');
+
+const STARTER_CSS = [
+  'body {',
+  '  display: grid;',
+  '  place-items: center;',
+  '  min-height: 100vh;',
+  '  margin: 0;',
+  '  background: #07080c;',
+  '  color: #e2e8f0;',
+  '  font-family: "Plus Jakarta Sans", system-ui, sans-serif;',
+  '}',
+  '',
+  '.card {',
+  '  width: min(420px, 86vw);',
+  '  padding: 34px 32px;',
+  '  background: rgba(16, 20, 32, 0.72);',
+  '  border: 1px solid rgba(245, 176, 65, 0.16);',
+  '  border-radius: 3px;',
+  '}',
+  '',
+  '/* gold is material, crimson is the accent */',
+  '.eyebrow {',
+  '  font-size: 11px;',
+  '  letter-spacing: 0.28em;',
+  '  text-transform: uppercase;',
+  '  color: #f5b041;',
+  '}',
+  '',
+  'h1 {',
+  '  margin: 0.35em 0 0.2em;',
+  '  font-size: 34px;',
+  '  letter-spacing: 0.01em;',
+  '}',
+  '',
+  'p { margin: 0 0 14px; color: #94a3b8; line-height: 1.7; }',
+  '',
+  '.cta {',
+  '  color: #ff2a44;',
+  '  text-decoration: none;',
+  '  border-bottom: 1px solid rgba(255, 42, 68, 0.45);',
+  '  padding-bottom: 2px;',
+  '}'
+].join('\n');
+
+const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+const baseName = (p) => p ? p.split(/[\\/]/).pop() : "";
+
+/* =====================================================================
+   1. Syntax highlighters (build markup once; no re-scan of inserted spans)
+   ===================================================================== */
+function paintHtmlToken(tok) {
+  const safe = esc(tok);
+  if (safe.startsWith("&lt;!--")) return '<span class="t-comment">' + safe + '</span>';
+  if (safe.startsWith("&lt;!")) return '<span class="t-doctype">' + safe + '</span>';
+  return safe.replace(
+    /(&lt;\/?)([\w:.-]+)|(\/?&gt;)|([\w:.-]+)(\s*=\s*)("[^"]*"|'[^']*')/g,
+    (_m, open, name, close, attr, eq, val) => {
+      if (open) return '<span class="t-punct">' + open + '</span><span class="t-tag">' + name + '</span>';
+      if (close) return '<span class="t-punct">' + close + '</span>';
+      return '<span class="t-attr">' + attr + '</span><span class="t-punct">' + eq + '</span><span class="t-str">' + val + '</span>';
+    }
+  );
+}
+
+function highlightHTML(src) {
+  let out = "", i = 0, m;
+  const re = /<!--[\s\S]*?-->|<!DOCTYPE[^>]*>|<\/?[a-zA-Z][^>]*?>/g;
+  while ((m = re.exec(src))) {
+    out += esc(src.slice(i, m.index));
+    out += paintHtmlToken(m[0]);
+    i = re.lastIndex;
+  }
+  return out + esc(src.slice(i));
+}
+
+function highlightCSS(src) {
+  let out = "", i = 0;
+  const n = src.length;
+  let inBlock = false, inValue = false;
+  const put = (cls, text) => { out += cls ? '<span class="' + cls + '">' + esc(text) + '</span>' : esc(text); };
+  const isWs = (c) => c === " " || c === "\t" || c === "\n" || c === "\r";
+
+  while (i < n) {
+    const c = src[i];
+    if (c === "/" && src[i + 1] === "*") {
+      const end = src.indexOf("*/", i + 2);
+      const stop = end < 0 ? n : end + 2;
+      put("t-comment", src.slice(i, stop)); i = stop; continue;
+    }
+    if (c === '"' || c === "'") {
+      let j = i + 1;
+      while (j < n && src[j] !== c) { if (src[j] === "\\") j++; j++; }
+      j = Math.min(j + 1, n);
+      put("t-str", src.slice(i, j)); i = j; continue;
+    }
+    if (c === "{" || c === "}" || c === ";" || c === ":") {
+      if (c === "{") { inBlock = true; inValue = false; }
+      else if (c === "}") { inBlock = false; inValue = false; }
+      else if (c === ";") { inValue = false; }
+      else if (inBlock) { inValue = true; }
+      put("t-punct", c); i++; continue;
+    }
+    if (isWs(c)) {
+      let j = i; while (j < n && isWs(src[j])) j++;
+      out += esc(src.slice(i, j)); i = j; continue;
+    }
+    let j = i;
+    while (j < n) {
+      const ch = src[j];
+      if ("{};:\"'".indexOf(ch) >= 0 || isWs(ch)) break;
+      if (ch === "/" && src[j + 1] === "*") break;
+      j++;
+    }
+    const tok = src.slice(i, j) || c;
+    i += tok.length;
+    if (!inBlock) put("t-sel", tok);
+    else if (inValue) put(/^[#\d]/.test(tok) ? "t-num" : "t-val", tok);
+    else put("t-prop", tok);
+  }
+  return out;
+}
+
+/* =====================================================================
+   2. Editor component (textarea + highlight overlay + line-number gutter)
+   ===================================================================== */
+function createEditor(root, lang) {
+  const gutter = root.querySelector(".gutter");
+  const hl = root.querySelector(".highlight");
+  const code = hl.querySelector("code");
+  const ta = root.querySelector(".code");
+  const paint = lang === "html" ? highlightHTML : highlightCSS;
+
+  function refresh() {
+    const src = ta.value;
+    // Safe: paint() runs every piece of user text through esc() (& < > escaped)
+    // and only ever adds our own constant <span class="t-*"> wrappers, so no
+    // user-supplied markup can survive into this innerHTML.
+    code.innerHTML = paint(src) + "\n";
+    let g = "";
+    for (let i = 1, lines = src.split("\n").length; i <= lines; i++) g += i + "\n";
+    gutter.textContent = g;
+    syncScroll();
+  }
+  function syncScroll() {
+    hl.scrollTop = ta.scrollTop;
+    hl.scrollLeft = ta.scrollLeft;
+    gutter.scrollTop = ta.scrollTop;
+  }
+
+  ta.addEventListener("input", () => { refresh(); onInput(); });
+  ta.addEventListener("scroll", syncScroll);
+  ta.addEventListener("keydown", (e) => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const s = ta.selectionStart, en = ta.selectionEnd;
+      ta.value = ta.value.slice(0, s) + "  " + ta.value.slice(en);
+      ta.selectionStart = ta.selectionEnd = s + 2;
+      refresh(); onInput();
+    }
+  });
+  ["click", "keyup", "select"].forEach((ev) => ta.addEventListener(ev, reportCursor));
+
+  return {
+    el: ta,
+    value: () => ta.value,
+    set: (v) => { ta.value = v; ta.scrollTop = 0; refresh(); },
+    refresh
+  };
+}
+
+/* =====================================================================
+   3. Document composition (preview) and splitting (open)
+   ===================================================================== */
+const ERROR_HOOK =
+  "<scr" + "ipt>(function(){function s(m){try{parent.postMessage({__webloomError:String(m)},\"*\")}catch(e){}}" +
+  "window.addEventListener(\"error\",function(e){s(e.message||\"Script error\")});" +
+  "window.addEventListener(\"unhandledrejection\",function(e){var r=e.reason;" +
+  "s(\"Unhandled rejection: \"+(r&&r.message?r.message:r))});})();</scr" + "ipt>";
+
+function buildDocument(userHtml, userCss, runtime) {
+  const styleTag = '<style id="' + CSS_MARK + '">\n' + userCss + '\n</style>';
+  const head = runtime
+    ? '<meta charset="utf-8">\n<style>html{background:#0b0d13;color:#e2e8f0}</style>\n' + ERROR_HOOK + '\n' + styleTag
+    : '<meta charset="utf-8">\n<title>Webloom document</title>\n' + styleTag;
+
+  const isFull = /<html[\s>]|<!doctype|<body[\s>]/i.test(userHtml);
+  if (isFull) {
+    if (/<\/head>/i.test(userHtml)) return userHtml.replace(/<\/head>/i, head + "\n</head>");
+    if (/<body[\s>]/i.test(userHtml)) return userHtml.replace(/<body([^>]*)>/i, "<head>" + head + "</head><body$1>");
+    return "<!DOCTYPE html>\n<html>\n<head>" + head + "</head>\n<body>\n" + userHtml + "\n</body>\n</html>";
+  }
+  return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n" + head + "\n</head>\n<body>\n" + userHtml + "\n</body>\n</html>";
+}
+
+function splitDocument(text) {
+  const marked = new RegExp('<style[^>]*id=["\']' + CSS_MARK + '["\'][^>]*>([\\s\\S]*?)</style>', "i");
+  const m = text.match(marked) || text.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+  const css = m ? m[1].replace(/^\s*\n/, "").replace(/\s+$/, "") : "";
+  const b = text.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  let html = b
+    ? b[1]
+    : text.replace(/<!DOCTYPE[^>]*>/i, "").replace(/<\/?html[^>]*>/gi, "").replace(/<head[\s\S]*?<\/head>/i, "");
+  return { css, html: html.replace(/^\s*\n+/, "").replace(/\n+\s*$/, "") };
+}
+
+/* =====================================================================
+   4. State + wiring
+   ===================================================================== */
+const state = { path: "", dirty: false };
+
+const htmlEditor = createEditor(document.querySelector('.editor[data-lang="html"]'), "html");
+const cssEditor = createEditor(document.querySelector('.editor[data-lang="css"]'), "css");
+const iframe = document.getElementById("preview");
+
+htmlEditor.set(STARTER_HTML);
+cssEditor.set(STARTER_CSS);
+
+function onInput() {
+  if (!state.dirty) { state.dirty = true; syncTitle(); }
+}
+
+function renderPreview() {
+  iframe.srcdoc = buildDocument(htmlEditor.value(), cssEditor.value(), true);
+  setStatus("rendering", false);
+}
+
+const renderSoon = debounce(renderPreview, 140);
+
+/* ---- preview diagnostics bridge (errors posted from the sandboxed frame) */
+window.addEventListener("message", (e) => {
+  const d = e.data;
+  if (d && typeof d === "object" && typeof d.__webloomError === "string") {
+    setStatus("preview error: " + d.__webloomError, true);
+  }
+});
+
+/* ---- status bar ---- */
+function setStatus(text, isError) {
+  const el = document.getElementById("status-left");
+  el.textContent = text;
+  el.classList.toggle("err", !!isError);
+  const ps = document.getElementById("preview-status");
+  ps.textContent = isError ? "error" : "live";
+  ps.classList.toggle("err", !!isError);
+}
+
+function syncTitle() {
+  const name = state.path ? baseName(state.path) : "untitled.html";
+  document.getElementById("doc-name").textContent = name;
+  document.getElementById("dirty-dot").classList.toggle("on", state.dirty);
+  sendToHost({ cmd: "set-title", title: (state.dirty ? "\u2022 " : "") + name });
+}
+
+function reportCursor() {
+  const ta = document.activeElement;
+  if (!ta || !ta.classList || !ta.classList.contains("code")) return;
+  const upto = ta.value.slice(0, ta.selectionStart);
+  const line = upto.split("\n").length;
+  const col = upto.length - upto.lastIndexOf("\n");
+  document.getElementById("status-right").textContent =
+    (ta.dataset.lang || "") + "   Ln " + line + ", Col " + col;
+}
+
+/* ---- host bridge ---- */
+function sendToHost(obj) {
+  if (window.ipc && typeof window.ipc.postMessage === "function") {
+    try { window.ipc.postMessage(JSON.stringify(obj)); }
+    catch (err) { setStatus("ipc failed: " + err, true); }
+  }
+}
+
+window.Webloom = {
+  receive(payload) {
+    if (!payload || typeof payload !== "object") return;
+    if (payload.cmd === "opened") {
+      const parts = splitDocument(String(payload.content || ""));
+      htmlEditor.set(parts.html);
+      cssEditor.set(parts.css);
+      state.path = payload.path || "";
+      state.dirty = false;
+      syncTitle();
+      renderPreview();
+      setStatus("opened " + baseName(state.path));
+    } else if (payload.cmd === "saved") {
+      state.path = payload.path || state.path;
+      state.dirty = false;
+      syncTitle();
+      setStatus("saved " + baseName(state.path));
+    } else if (payload.cmd === "error") {
+      setStatus(String(payload.message || "host error"), true);
+    }
+  }
+};
+
+/* ---- actions ---- */
+function currentDocument() { return buildDocument(htmlEditor.value(), cssEditor.value(), false); }
+
+const actions = {
+  new() {
+    if (state.dirty && !confirm("Discard unsaved changes and start a new document?")) return;
+    htmlEditor.set(STARTER_HTML);
+    cssEditor.set(STARTER_CSS);
+    state.path = ""; state.dirty = false;
+    syncTitle(); renderPreview(); setStatus("new document");
+  },
+  open() { sendToHost({ cmd: "open" }); },
+  save() { sendToHost({ cmd: "save", path: state.path, content: currentDocument() }); },
+  export() {
+    const name = state.path ? baseName(state.path) : "untitled.html";
+    sendToHost({ cmd: "export", name, content: currentDocument() });
+  },
+  refresh() { renderPreview(); setStatus("refreshed"); }
+};
+
+document.querySelectorAll("[data-action]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const fn = actions[btn.dataset.action];
+    if (fn) fn();
+  });
+});
+
+/* ---- view switch ---- */
+const paneEditors = document.getElementById("pane-editors");
+document.querySelectorAll("#view-seg .seg-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#view-seg .seg-btn").forEach((b) => b.classList.remove("is-active"));
+    btn.classList.add("is-active");
+    paneEditors.dataset.view = btn.dataset.view;
+    htmlEditor.refresh(); cssEditor.refresh();
+  });
+});
+
+/* ---- resizable divider ---- */
+(function () {
+  const ws = document.getElementById("workspace");
+  const div = document.getElementById("divider");
+  let dragging = false;
+  div.addEventListener("pointerdown", (e) => {
+    dragging = true; div.setPointerCapture(e.pointerId); document.body.classList.add("resizing");
+  });
+  div.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const r = ws.getBoundingClientRect();
+    let x = e.clientX - r.left;
+    x = Math.max(240, Math.min(r.width - 320, x));
+    ws.style.setProperty("--split", x + "px");
+  });
+  const stop = (e) => {
+    if (!dragging) return;
+    dragging = false; document.body.classList.remove("resizing");
+    try { div.releasePointerCapture(e.pointerId); } catch (_) {}
+  };
+  div.addEventListener("pointerup", stop);
+  div.addEventListener("pointercancel", stop);
+})();
+
+/* ---- keyboard shortcuts ---- */
+window.addEventListener("keydown", (e) => {
+  if (!(e.ctrlKey || e.metaKey)) return;
+  const k = e.key.toLowerCase();
+  if (k === "s") { e.preventDefault(); actions.save(); }
+  else if (k === "o") { e.preventDefault(); actions.open(); }
+});
+
+/* ---- boot ---- */
+syncTitle();
+renderPreview();
+setStatus("ready");
+</script>
+</body>
+</html>
