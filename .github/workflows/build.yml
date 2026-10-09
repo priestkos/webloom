@@ -16,7 +16,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Use the newest stable toolchain: the crate is edition 2024 (needs rustc >= 1.85).
       - name: Install Rust stable
@@ -28,7 +28,7 @@ jobs:
 
       # Cache the cargo registry and the build directory between runs.
       - name: Cache cargo
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
@@ -44,7 +44,7 @@ jobs:
         run: cargo build --release --locked --target x86_64-pc-windows-msvc
 
       - name: Upload webloom.exe
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: webloom-windows-x86_64
           path: target/x86_64-pc-windows-msvc/release/webloom.exe
